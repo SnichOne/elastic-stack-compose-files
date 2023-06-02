@@ -1,0 +1,46 @@
+version: "3.8"
+services:
+  elasticsearch:
+    container_name: elastic
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+    environment:
+      - cluster.name=${CLUSTER_NAME}
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=${LICENSE}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./es_data:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - ${ES_PORT}:9200
+    networks:
+      - main
+    restart: always
+
+
+  kibana:
+    depends_on:
+      - elasticsearch
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+    environment:
+      - SERVERNAME=kibana
+    ports:
+      - ${KIBANA_PORT}:5601
+    networks:
+      - main
+    restart: always
+
+
+volumes:
+  es_data:
+    driver: local
+
+
+networks:
+    main:

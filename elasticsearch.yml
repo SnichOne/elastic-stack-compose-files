@@ -1,0 +1,13 @@
+cluster:
+  routing:
+    allocation:
+      disk:
+        threshold_enabled: true
+        watermark:
+          low: 40gb
+          high: 20gb
+          flood_stage: 10gb
+
+network.bind_host: 0.0.0.0
+http.max_initial_line_length: 18kb
+http.max_header_size: 24kb
